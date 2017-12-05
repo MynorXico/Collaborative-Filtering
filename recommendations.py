@@ -6,7 +6,7 @@ from math import sqrt
 critics = {
     'Lisa Rose': {
         'Lady in the Water': 2.5,
-        'Snakes on Plane': 3.5,
+        'Snakes on a Plane': 3.5,
         'Just My Luck': 3.0,
         'Superman Returns': 3.5,
         'You, Me and Dupree': 2.5,
@@ -111,3 +111,36 @@ def topMatches(prefs, person, n=5, similarity=sim_pearson):
     scores.sort()
     scores.reverse()
     return scores[0:n]
+
+# Gets recommendations for a person by using a weighted average
+# of every other user's rankings
+def getRecommendations(prefs, person, similarity=sim_pearson):
+    totals = {}
+    simSums = {}
+
+    for other in prefs:
+        # don't compare me to myself
+        if other == person: continue
+        sim = similarity(prefs, person, other)
+
+        # ignore scores of zero or lower
+        if sim <= 0: continue
+        for item in prefs[other]:
+            # only score movies I haven't seen yet
+            if item not in prefs[person] or prefs[person][item] == 0:
+                # Similarity * score
+                totals.setdefault(item, 0)
+                totals[item] += prefs[other][item] * sim
+
+                # Sum of similarities
+                simSums.setdefault(item, 0)
+                simSums[item]+=sim
+    # Create the normalized list
+    rankings = [(total/simSums[item], item) for item, total in totals.items()]
+
+    # Return the sorted list
+    rankings.sort()
+    rankings.reverse()
+    return rankings
+
+print(getRecommendations(critics, 'Toby', similarity=sim_distance))
