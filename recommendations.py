@@ -7,7 +7,7 @@ critics = {
     'Lisa Rose': {
         'Lady in the Water': 2.5,
         'Snakes on Plane': 3.5,
-        'Jus My Luck': 3.0,
+        'Just My Luck': 3.0,
         'Superman Returns': 3.5,
         'You, Me and Dupree': 2.5,
         'The Night Listener': 3.0
@@ -15,7 +15,7 @@ critics = {
     'Gene Seymour':{
         'Lady in the Water': 3.0,
         'Snakes on a Plane': 3.5,
-        'Jus My Luck': 1.5,
+        'Just My Luck': 1.5,
         'Superman Returns': 5.0,
         'The Night Listener': 3.0,
         'You, Me and Dupree': 3.5
@@ -36,10 +36,10 @@ critics = {
     'Mick LaSalle':{
         'Lady in the Water': 3.0,
         'Snakes on a Plane': 4.0,
-        'Jus My Luck': 2.0,
+        'Just My Luck': 2.0,
         'Superman Returns': 3.0,
         'The Night Listener' : 3.0,
-        'You, me and Dupree': 2.0
+        'You, Me and Dupree': 2.0
     },
     'Jack Matthews':{
         'Lady in the Water': 3.0,
@@ -79,7 +79,7 @@ def sim_pearson(prefs, person1, person2):
     # Find the number of elements
     n = len(si)
 
-    # if they are no ratings in common, return 0
+    # if they are no ratings in common return 0
     if n==0: return 0
 
     # Add up all the preferences
@@ -102,4 +102,12 @@ def sim_pearson(prefs, person1, person2):
 
     return r
 
-print(sim_pearson(critics, 'Lisa Rose', 'Gene Seymour'))
+# Returns the best matches for person from the prefs dictionary
+# Number of results and similarity function are optional params
+def topMatches(prefs, person, n=5, similarity=sim_pearson):
+    scores = [(similarity(prefs,person,other), other) for other in prefs if other != person]
+
+    # Sort the list so the hightest scores appear at the top
+    scores.sort()
+    scores.reverse()
+    return scores[0:n]
